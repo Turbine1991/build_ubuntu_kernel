@@ -14,7 +14,7 @@ Requirements:
 * Ubuntu Linux Wily or Xenial recommended.
 * Use a stock kernel when using these scripts, for dependency resolution.
 
-How to use, run these commands in-ordert:
+How to use, run these commands in-order:
 * sudo apt-get update && sudo apt-get install git
 * git clone https://github.com/Turbine1991/build_ubuntu_kernel_wastedcores.git
 * cd build_ubuntu_kernel_wastedcores
