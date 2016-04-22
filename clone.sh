@@ -89,7 +89,5 @@ sed -i '80iextern int sched_max_numa_distance;' kernel/mainline-crack/arch/x86/k
 
 #Generate config prompt
 read -p "Generate a localmodconfig (y/n): " -n 1
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  cd "kernel/mainline-crack" && make localmodconfig
-fi
+cd "kernel/mainline-crack" && [[ $REPLY =~ ^[Yy]$ && type=localmodconfig || type=oldconfig ]] && make $type
 }
