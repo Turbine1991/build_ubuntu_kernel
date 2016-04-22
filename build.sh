@@ -19,7 +19,7 @@ cd "kernel"
 (
 ##Build into .deb package
 cd "mainline-crack"
-make clean && fakeroot make-kpkg -j1 --initrd --append-to-version=custom$BUILD_COUNT kernel_image kernel_headers
+make clean && fakeroot make-kpkg -j`nproc` --initrd --append-to-version=custom$BUILD_COUNT kernel_image kernel_headers
 )
 
 ##Install
