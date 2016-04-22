@@ -16,7 +16,7 @@ if [[ -z $($STR_APT_DEP 2>&1 | awk '{print $4}' | grep "source") ]]; then
 fi
 #
 
-apt-get install kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git
+apt-get install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git
 #
 
 {
