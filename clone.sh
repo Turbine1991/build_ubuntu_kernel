@@ -25,12 +25,14 @@ mkdir kernel
 cd kernel
 
 ##Setup
-PATCH_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
-PATCH_SOURCE_URL_REQUEST="$PATCH_SOURCE_URL/?C=M;O=D"
+PATCH_SOURCE_GIT="https://github.com/Freeaqingme/wastedcores.git"
+#PATCH_SOURCE_GIT="https://github.com/jplozi/wastedcores.git"
+KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
+KERNEL_SOURCE_URL_REQUEST="$KERNEL_SOURCE_URL/?C=M;O=D"
 KERNEL_VERSION="v4.1"
 
 ##Find latest kernel version in a specific branch
-PATCH_DIR=$(curl "$PATCH_SOURCE_URL_REQUEST" 2> /dev/null \
+PATCH_DIR=$(curl "$KERNEL_SOURCE_URL_REQUEST" 2> /dev/null \
 		| grep "<a href=" \
 		| sed "s/<a href/\\n<a href/g" \
 		| sed 's/\"/\"><\/a>\n/2' \
@@ -40,7 +42,7 @@ PATCH_DIR=$(curl "$PATCH_SOURCE_URL_REQUEST" 2> /dev/null \
 		| grep "$KERNEL_VERSION" \
 		| head -1)
 
-PATCH_URL="$PATCH_SOURCE_URL/$PATCH_DIR"
+PATCH_URL="$KERNEL_SOURCE_URL/$PATCH_DIR"
 
 ##Get kernel data
 wget "$PATCH_URL/SOURCES"
@@ -58,7 +60,7 @@ while read f; do
 done < "../SOURCES"
 
 #Download scheduler patches
-git clone "https://github.com/jplozi/wastedcores.git"
+git clone "$PATCH_SOURCE_GIT"
 
 cp wastedcores/patches/*.patch ./
 rm -R wastedcores
