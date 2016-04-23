@@ -2,7 +2,7 @@
 
 What this does:
 * Downloads all the dependencies necessary to build a kernel.
-* Clones the latest Ubuntu Linux kernel of branch v4.1, applies all of the standard patches.
+* Clones the latest Ubuntu Linux kernel of branch v4.5, applies all of the standard patches.
 * Clones and applies wastedcores patches.
 * Sneakily applies the CPU target patch, enabling you to target a greater range of cpu architectures - primarily the native arch.
 * Prompts whether you'd like to generate a localmodconfig.
@@ -18,7 +18,6 @@ How to use, run these commands in-order:
 * sudo apt-get update && sudo apt-get install git
 * git clone https://github.com/Turbine1991/build_ubuntu_kernel_wastedcores.git
 * cd build_ubuntu_kernel_wastedcores
-* sudo chmod +x *.sh
 * sudo bash clone.sh
 * sudo bash menu.sh
 * sudo bash build.sh
