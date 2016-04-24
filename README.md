@@ -2,9 +2,8 @@
 
 ## What this does:
 * Downloads all the dependencies necessary to build a kernel.
-* Clones the latest Ubuntu Linux kernel of branch v4.5, applies all of the standard patches.
-* Clones and applies wastedcores patches.
-* Prompts whether you'd like to use the existing config, or generate a localmodconfig.
+* Clones the latest stable Ubuntu Linux kernel branch of v4.5.
+* Applies WastedCores patches modified by Freeaqingme.
 * Displays a menu for you to modify the kernel.
 * Lets you build the kernel into a .deb package.
 
