@@ -4,11 +4,9 @@
 * Downloads all the dependencies necessary to build a kernel.
 * Clones the latest Ubuntu Linux kernel of branch v4.5, applies all of the standard patches.
 * Clones and applies wastedcores patches.
-* Sneakily applies the CPU target patch, enabling you to target a greater range of cpu architectures - primarily the native arch.
-* Prompts whether you'd like to generate a localmodconfig.
+* Prompts whether you'd like to use the existing config, or generate a localmodconfig.
 * Displays a menu for you to modify the kernel.
 * Lets you build the kernel into a .deb package.
-*  whether you'd like to install the kernel.
 
 ## Requirements:
 * Ubuntu Linux. Wily or Xenial recommended.
