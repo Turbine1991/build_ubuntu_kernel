@@ -84,10 +84,8 @@ do
   patch -p1 -i "$f"
 done
 
-#Dirty fix for compiler error described at: https://gist.github.com/brendangregg/588b1d29bcb952141d50ccc0e005fcf8
-#Please can somebody advise on a better automated solution
-#This line inserts the extern line into line 80 of a source file
-sed -i '80iextern int sched_max_numa_distance;' arch/x86/kernel/smpboot.c
+#Deprecated - Dirty fix has been resolved thanks to Freeaqingme's modified scheduler patches
+#sed -i '80iextern int sched_max_numa_distance;' arch/x86/kernel/smpboot.c
 
 #Generate config prompt
 read -p "Generate a localmodconfig (y/n): " -n 1
