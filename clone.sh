@@ -148,5 +148,9 @@ fi
 
 #Generate config prompt
 read -p "Generate a localmodconfig (y/n): " -n 1
-[[ $REPLY =~ ^[Yy]$ && type=localmodconfig || type=oldconfig ]] && make $type
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  make localmodconfig
+else
+  make oldconfig
+fi
 }
