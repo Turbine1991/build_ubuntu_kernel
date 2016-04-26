@@ -2,8 +2,8 @@
 
 ## What this does:
 * Downloads all the dependencies necessary to build a kernel.
-* Clones the latest stable Ubuntu Linux kernel branch of v4.5.
-* Applies WastedCores patches modified by Freeaqingme.
+* Lets you choose a Linux kernel version.
+* Applies WastedCores patches compatible with the kernel version.
 * Displays a menu for you to modify the kernel.
 * Lets you build the kernel into a .deb package.
 
@@ -12,7 +12,7 @@
 * Use a stock kernel when using these scripts, for dependency resolution.
 * No real kernel experience or in-depth knowledge of Linux.
 
-## How to use, run these commands in-order:
+## How to use, simply run:
 * sudo apt-get update && sudo apt-get install git
 * git clone https://github.com/Turbine1991/build_ubuntu_kernel_wastedcores.git
 * cd build_ubuntu_kernel_wastedcores
