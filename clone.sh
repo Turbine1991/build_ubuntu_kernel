@@ -29,11 +29,10 @@ cd kernel
 
 ##Setup
 KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
-KERNEL_SOURCE_URL_REQUEST="$KERNEL_SOURCE_URL/?C=M;O=D"
 
 ##Manage kernel version
 #Declare
-versions="latest 4.1 "
+versions="daily 4.6 4.1 "
 
 #Retrieve patch branches from git
 branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
@@ -67,11 +66,14 @@ done
 version=$(sa_get_value "$versions" $((i-1)))
 
 #Process selected kernel version
+WASTEDCORES_GIT="https://github.com/Freeaqingme/wastedcores.git"
 case $version in
-  "latest")
-    version="4.6" #Temporary
-    WASTEDCORES_GIT="https://github.com/Freeaqingme/wastedcores.git"
+  "daily")
     WASTEDCORES_BRANCH="HEAD"
+  ;;
+  
+  "4.6")
+    WASTEDCORES_BRANCH="linux-4.5"
   ;;
 
   "4.1")
@@ -85,20 +87,29 @@ case $version in
   ;;
 esac
 
-KERNEL_VERSION="v$version"
+if [[ $version == "daily" ]]; then
+  KERNEL_VERSION="$version"
 
-##Find latest kernel version in a specific branch
-PATCH_DIR=$(curl "$KERNEL_SOURCE_URL_REQUEST" 2> /dev/null \
-		| grep "<a href=" \
-		| sed "s/<a href/\\n<a href/g" \
-		| sed 's/\"/\"><\/a>\n/2' \
-		| grep href \
-		| awk '{ print $2 }' \
-		| cut -d '"' -f2 \
-		| grep "$KERNEL_VERSION" \
-		| head -1)
+  KERNEL_SOURCE_URL="$KERNEL_SOURCE_URL/daily/current"
 
-PATCH_URL="$KERNEL_SOURCE_URL/$PATCH_DIR"
+  PATCH_URL="$KERNEL_SOURCE_URL"
+else
+  KERNEL_VERSION="v$version"
+
+  ##Find latest kernel version in a specific branch
+  KERNEL_SOURCE_URL_REQUEST="$KERNEL_SOURCE_URL/?C=M;O=D"
+  PATCH_DIR=$(curl "$KERNEL_SOURCE_URL_REQUEST" 2> /dev/null \
+                | grep "<a href=" \
+                | sed "s/<a href/\\n<a href/g" \
+                | sed 's/\"/\"><\/a>\n/2' \
+                | grep href \
+                | awk '{ print $2 }' \
+                | cut -d '"' -f2 \
+                | grep "$KERNEL_VERSION" \
+                | head -1)
+
+  PATCH_URL="$KERNEL_SOURCE_URL/$PATCH_DIR"
+fi
 
 ##Get kernel data
 wget "$PATCH_URL/SOURCES"
