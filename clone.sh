@@ -33,7 +33,7 @@ KERNEL_SOURCE_URL_REQUEST="$KERNEL_SOURCE_URL/?C=M;O=D"
 
 ##Manage kernel version
 #Declare
-versions="latest 4.6 4.1 "
+versions="latest 4.1 "
 
 #Retrieve patch branches from git
 branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
