@@ -3,6 +3,9 @@
 #GitHub This: https://github.com/Turbine1991/build_ubuntu_kernel_wastedcores
 #GitHub WastedCores: https://github.com/jplozi/wastedcores
 
+##Includes
+. functions.sh
+
 ##Download Dependencies
 apt-get update
 
@@ -25,11 +28,64 @@ mkdir kernel
 cd kernel
 
 ##Setup
-PATCH_SOURCE_GIT="https://github.com/Freeaqingme/wastedcores.git"
-#PATCH_SOURCE_GIT="https://github.com/jplozi/wastedcores.git"
 KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
 KERNEL_SOURCE_URL_REQUEST="$KERNEL_SOURCE_URL/?C=M;O=D"
-KERNEL_VERSION="v4.1"
+
+##Manage kernel version
+#Declare
+versions="latest 4.6 4.1 "
+
+#Retrieve patch branches from git
+branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
+versions="$versions$branches"
+
+#Initialise
+versions_max=$(sa_get_count "$versions")
+
+#Order
+versions=$(sa_sort "$versions")
+versions=$(sa_reverse "$versions")
+
+#List kernel version choices
+printf "\nKernel Versions\n"
+
+print_choices "$versions"
+
+#Prompt
+printf "Please enter your choice: "
+while read i
+do
+  #Check if valid input, is a number, is within choice boundaries
+  if [[ -z "$i" || "$i" -ne "$i" || "$i" > "$versions_max" ]]
+  then
+    printf "Try again: "
+  else
+    break
+  fi
+done
+
+version=$(sa_get_value "$versions" $((i-1)))
+
+#Process selected kernel version
+case $version in
+  "latest")
+    version="4.6" #Temporary
+    WASTEDCORES_GIT="https://github.com/Freeaqingme/wastedcores.git"
+    WASTEDCORES_BRANCH="HEAD"
+  ;;
+
+  "4.1")
+    WASTEDCORES_GIT="https://github.com/jplozi/wastedcores.git"
+    WASTEDCORES_BRANCH="HEAD"
+  ;;
+
+  *)
+    WASTEDCORES_GIT="https://github.com/Freeaqingme/wastedcores.git"
+    WASTEDCORES_BRANCH="linux-$version"
+  ;;
+esac
+
+KERNEL_VERSION="v$version"
 
 ##Find latest kernel version in a specific branch
 PATCH_DIR=$(curl "$KERNEL_SOURCE_URL_REQUEST" 2> /dev/null \
@@ -60,7 +116,7 @@ while read f; do
 done < "../SOURCES"
 
 #Download scheduler patches
-git clone "$PATCH_SOURCE_GIT"
+git clone "$WASTEDCORES_GIT"
 
 cp wastedcores/patches/*.patch ./
 rm -R wastedcores
@@ -72,8 +128,9 @@ wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_a
 cd ..
 
 #Download kernel source
-STR_GIT_LINUX=$(head -1 SOURCES | awk '{ printf "git clone --depth=1 --branch=%s %s", $2, $1 }')
-
+KERNEL_LINE=$(head -1 SOURCES)
+KERNEL_BRANCH=$(echo "$KERNEL_LINE" | awk '{ print $2 }')
+STR_GIT_LINUX=$(echo "$KERNEL_LINE" | awk '{ printf "git clone --depth=1 --branch=%s %s", $2, $1 }')
 $STR_GIT_LINUX
 
 #Patch source
@@ -84,8 +141,10 @@ do
   patch -p1 -i "$f"
 done
 
-#Deprecated - Dirty fix has been resolved thanks to Freeaqingme's modified scheduler patches
-#sed -i '80iextern int sched_max_numa_distance;' arch/x86/kernel/smpboot.c
+#Dirty compilation error fix - has been resolved thanks to Freeaqingme's modified scheduler patches
+if [[ $version == "4.1" ]]; then
+  sed -i '80iextern int sched_max_numa_distance;' arch/x86/kernel/smpboot.c
+fi
 
 #Generate config prompt
 read -p "Generate a localmodconfig (y/n): " -n 1
