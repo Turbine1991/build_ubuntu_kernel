@@ -20,7 +20,7 @@ cd "mainline-crack"
 #		&& export CXXFLAGS=' -march=native -mtune=native -mcpu=native -Ofast -fwhole-program' \
 #		&& export LDFLAGS=' -fwhole-program '
 #
-#if [[ ! -f .optimized ]] then
+#if [[ ! -f .optimized ]]; then
   #Put optimizations into Makefile
 #  sed -i '/HOSTCFLAGS   =/c\HOSTCFLAGS   = -march=native -mtune=native -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-tree-vectorize -std=gnu89' Makefile
 #  sed -i '/HOSTCXXFLAGS =/c\HOSTCXXFLAGS = -march=native -mtune=native -Ofast' Makefile
