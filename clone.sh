@@ -127,7 +127,7 @@ while read f; do
 done < "../SOURCES"
 
 #Download scheduler patches
-git clone "$WASTEDCORES_GIT"
+git clone --depth=1 --branch="$WASTEDCORES_BRANCH" "$WASTEDCORES_GIT"
 
 cp wastedcores/patches/*.patch ./
 rm -R wastedcores
