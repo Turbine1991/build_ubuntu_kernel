@@ -19,6 +19,7 @@
 * sudo bash clone.sh
 * sudo bash menu.sh
 * sudo bash build.sh
+* sudo dpkg -i kernel/*.deb
 
 ## Article
 http://www.ece.ubc.ca/~sasha/papers/eurosys16-final29.pdf
