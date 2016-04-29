@@ -3,11 +3,17 @@
 #GitHub This: https://github.com/Turbine1991/build_ubuntu_kernel_wastedcores
 #GitHub WastedCores: https://github.com/jplozi/wastedcores
 
+##Setup
+BUILD_PREFIX="custom"
+
 ##Retrieve/increment build value
 BUILD_COUNT=$(cat ".build_count")
 ((BUILD_COUNT++))
 echo "$BUILD_COUNT" > .build_count
 #
+
+##Declare
+DEB_FILE="$BUILD_PREFIX$BUILD_COUNT"
 
 cd "kernel"
 
@@ -27,15 +33,13 @@ cd "mainline-crack"
 #  touch .optimized
 #fi
 
-make clean && fakeroot make-kpkg -j`nproc` --initrd --append-to-version=custom$BUILD_COUNT kernel_image kernel_headers
+make clean && fakeroot make-kpkg -j`nproc` --initrd --append-to-version=$DEB_FILE kernel_image kernel_headers
 )
 
-##Install
-DEB_WILDCARD="*custom$BUILD_COUNT*.deb"
-
-if [[ -f $DEB_WILDCARD ]]; then
+##Request and attempt installation of compiled packages
+if ls *$DEB_FILE*.deb 1> /dev/null 2>&1; then
   read -p "Install kernel (y/n): " -n 1
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    dpkg -i $DEB_WILDCARD
+    dpkg -i *$DEB_FILE*.deb
   fi
 fi
