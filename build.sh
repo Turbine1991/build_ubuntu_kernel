@@ -34,6 +34,8 @@ cd "mainline-crack"
 #fi
 
 make clean && fakeroot make-kpkg -j`nproc` --initrd --append-to-version=$DEB_FILE kernel_image kernel_headers
+
+echo "Everything's Complete"
 )
 
 ##Request and attempt installation of compiled packages
@@ -41,5 +43,7 @@ if ls *$DEB_FILE*.deb 1> /dev/null 2>&1; then
   read -p "Install kernel (y/n): " -n 1
   if [[ $REPLY =~ ^[Yy]$ ]]; then
     dpkg -i *$DEB_FILE*.deb
+    
+    echo "Please Reboot"
   fi
 fi
