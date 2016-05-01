@@ -20,6 +20,11 @@
 * sudo bash menu.sh
 * sudo bash build.sh
 
+## Disable HT cores for potentially better scheduling performance
+* sudo chmod +x setht.sh
+* **Run after every boot:**
+* sudo bash setht.sh
+
 ## Article
 http://www.ece.ubc.ca/~sasha/papers/eurosys16-final29.pdf
 
