@@ -156,10 +156,10 @@ do
   patch -p1 -i "$f"
 done
 
-#Dirty compilation error fix - has been resolved thanks to Freeaqingme's modified scheduler patches
-if [[ $version == "4.1" ]]; then
-  sed -i '80iextern int sched_max_numa_distance;' arch/x86/kernel/smpboot.c
-fi
+#Fixed in the 4.1 branch and in Freeaqingme's branches - Dirty compilation error fix
+#if [[ $version == "4.1" ]]; then
+#  sed -i '80iextern int sched_max_numa_distance;' arch/x86/kernel/smpboot.c
+#fi
 
 #Generate config prompt
 read -p "Generate a localmodconfig (y/n): " -n 1
