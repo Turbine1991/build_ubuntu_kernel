@@ -25,9 +25,9 @@ apt-get install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-d
 {
 if [[ -f "kernel/mainline-crack/.config" ]]; then
   cp "kernel/mainline-crack/.config" ./
-  rm -R kernel
 fi
 
+rm -R kernel
 mkdir kernel
 cd kernel
 
