@@ -10,13 +10,14 @@
 apt-get update
 
 #Detect and enable source repository when required
-STR_APT_DEP="apt-get build-dep linux-image-`uname -r`"
-if [[ -z $($STR_APT_DEP 2>&1 | awk '{print $4}' | grep "source") ]]; then
-  apt-get install software-properties-common
-  cat /etc/apt/sources.list | grep -e "^deb http://" | head -1 | awk '{ printf "deb-src %s %s main", $2, $3 }' >> /etc/apt/sources.list
-  apt-get update
-  $STR_APT_DEP
-fi
+apt-get build-dep linux-image-`uname -r`
+#STR_APT_DEP="apt-get build-dep linux-image-`uname -r`"
+#if [[ -z $($STR_APT_DEP 2>&1 | awk '{print $4}' | grep "source") ]]; then
+#  apt-get install software-properties-common
+#  cat /etc/apt/sources.list | grep -e "^deb http://" | head -1 | awk '{ printf "deb-src %s %s main", $2, $3 }' >> /etc/apt/sources.list
+#  apt-get update
+#  $STR_APT_DEP
+#fi
 #
 
 apt-get install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git
