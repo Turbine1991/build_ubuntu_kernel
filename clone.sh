@@ -37,7 +37,7 @@ KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
 
 ##Manage kernel version
 #Declare
-versions="daily 4.6 4.1 "
+versions="daily 4.8 4.7 4.6 4.1 "
 
 #Retrieve patch branches from git
 branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
