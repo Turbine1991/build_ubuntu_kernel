@@ -120,7 +120,6 @@ fi
 wget "$PATCH_URL/SOURCES"
 
 ##Retrieve patches
-
 mkdir patch
 cd patch
 
@@ -132,10 +131,13 @@ while read f; do
 done < "../SOURCES"
 
 #Download scheduler patches
-git clone --depth=1 --branch="$WASTEDCORES_BRANCH" "$WASTEDCORES_GIT"
+read -p "Install wastedcores patch (y/n): " -n 1
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  git clone --depth=1 --branch="$WASTEDCORES_BRANCH" "$WASTEDCORES_GIT"
 
-cp wastedcores/patches/*.patch ./
-rm -R wastedcores
+  cp wastedcores/patches/*.patch ./
+  rm -R wastedcores
+fi
 
 #Download additional CPU optimizations patch
 wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v3.15%2B.patch
