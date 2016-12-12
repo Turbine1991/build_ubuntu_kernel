@@ -87,7 +87,7 @@ case $version in
   ;;
 
   *)
-    WASTEDCORES_BRANCH="master"
+    WASTEDCORES_BRANCH="HEAD"
   ;;
 esac
 
