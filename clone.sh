@@ -73,12 +73,12 @@ version=$(sa_get_value "$versions" $((i-1)))
 #Process selected kernel version
 WASTEDCORES_GIT="https://github.com/Freeaqingme/wastedcores.git"
 case $version in
-  "daily")
-    WASTEDCORES_BRANCH="HEAD"
-  ;;
-  
-  "4.6")
+  "4.5")
     WASTEDCORES_BRANCH="linux-4.5"
+  ;;
+
+  "4.4")
+    WASTEDCORES_BRANCH="linux-4.4"
   ;;
 
   "4.1")
@@ -87,8 +87,7 @@ case $version in
   ;;
 
   *)
-    WASTEDCORES_GIT="https://github.com/Freeaqingme/wastedcores.git"
-    WASTEDCORES_BRANCH="linux-$version"
+    WASTEDCORES_BRANCH="master"
   ;;
 esac
 
