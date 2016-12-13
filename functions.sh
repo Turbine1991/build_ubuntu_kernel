@@ -57,3 +57,35 @@ function print_choices() {
     ((i++))
   done
 }
+
+#Retrieves the latest file/dir from a generated apache index page containing given string
+function get_http_apache_listing {
+  local http_request=$1
+  local http_match=$2
+
+  if [[ "$3" ]]; then
+    local str_http_head=$3
+  fi
+
+  local http_items=$(curl "$http_request/?C=M;O=D" 2> /dev/null \
+                | grep "<a href=" \
+                | grep -v 'Parent Directory' \
+                | sed "s/<a href/\\n<a href/g" \
+                | sed 's/\"/\"><\/a>\n/2' \
+                | grep href \
+                | awk '{ print $2 }' \
+                | cut -d '"' -f2 \
+                | grep "$http_match" \
+                | sed -e 's/^\///' \
+                | sed -e 's#/$##' \
+                | grep -v '?' \
+                | head -$str_http_head )
+
+  echo "$http_items"
+}
+
+function match_str {
+  local result=`echo $1 | grep $2`
+
+  [[ $result ]] && echo 1 || echo 0
+}
