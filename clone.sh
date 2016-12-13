@@ -83,11 +83,11 @@ case $version in
 
   "4.1")
     WASTEDCORES_GIT="https://github.com/jplozi/wastedcores.git"
-    WASTEDCORES_BRANCH="HEAD"
+    WASTEDCORES_BRANCH="master"
   ;;
 
   *)
-    WASTEDCORES_BRANCH="HEAD"
+    WASTEDCORES_BRANCH="master"
   ;;
 esac
 
