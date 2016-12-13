@@ -37,7 +37,7 @@ KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
 
 ##Manage kernel version
 #Declare
-versions="daily 4.9 4.8 4.7 4.6 4.1 "
+versions="daily 4.9 4.8 4.7 4.6 4.5 4.1 "
 
 #Retrieve patch branches from git
 branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
@@ -101,17 +101,7 @@ else
   KERNEL_VERSION="v$version"
 
   ##Find latest kernel version in a specific branch
-  KERNEL_SOURCE_URL_REQUEST="$KERNEL_SOURCE_URL/?C=M;O=D"
-  PATCH_DIR=$(curl "$KERNEL_SOURCE_URL_REQUEST" 2> /dev/null \
-                | grep "<a href=" \
-                | sed "s/<a href/\\n<a href/g" \
-                | sed 's/\"/\"><\/a>\n/2' \
-                | grep href \
-                | awk '{ print $2 }' \
-                | cut -d '"' -f2 \
-                | grep "$KERNEL_VERSION" \
-                | head -1)
-
+  PATCH_DIR=`get_http_apache_listing "$KERNEL_SOURCE_URL" "$KERNEL_VERSION" 1`
   PATCH_URL="$KERNEL_SOURCE_URL/$PATCH_DIR"
 fi
 
