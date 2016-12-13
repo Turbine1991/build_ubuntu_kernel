@@ -87,5 +87,9 @@ function get_http_apache_listing {
 function match_str {
   local result=`echo $1 | grep $2`
 
-  [[ $result ]] && echo 1 || echo 0
+  if [[ -z "$3" ]]; then
+    [[ $result ]] && echo 1 || echo 0
+  else
+    [[ $result ]] && echo $3
+  fi
 }
