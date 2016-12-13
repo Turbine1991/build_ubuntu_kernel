@@ -37,7 +37,7 @@ KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
 
 ##Manage kernel version
 #Declare
-versions="daily 4.9 4.8 4.7 4.6 4.5 4.1 "
+versions="daily 4.9 4.8 4.7 4.6 4.1 "
 
 #Retrieve patch branches from git
 branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
@@ -72,6 +72,7 @@ version=$(sa_get_value "$versions" $((i-1)))
 
 #Process selected kernel version
 WASTEDCORES_GIT="https://github.com/Freeaqingme/wastedcores.git"
+
 case $version in
   "4.5")
     WASTEDCORES_BRANCH="linux-4.5"
@@ -98,10 +99,10 @@ if [[ $version == "daily" ]]; then
 
   PATCH_URL="$KERNEL_SOURCE_URL"
 else
-  KERNEL_VERSION="v$version"
+  KERNEL_VERSION="$version"
 
   ##Find latest kernel version in a specific branch
-  PATCH_DIR=`get_http_apache_listing "$KERNEL_SOURCE_URL" "$KERNEL_VERSION" 1`
+  PATCH_DIR=`get_http_apache_listing "$KERNEL_SOURCE_URL" "v$KERNEL_VERSION" 1`
   PATCH_URL="$KERNEL_SOURCE_URL/$PATCH_DIR"
 fi
 
@@ -119,14 +120,53 @@ while read f; do
   fi
 done < "../SOURCES"
 
-#Download scheduler patches
-read -p "Install wastedcores patch (y/n): " -n 1
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  git clone --depth=1 --branch="$WASTEDCORES_BRANCH" "$WASTEDCORES_GIT"
+#Prompt for scheduler
+URL_MUQSS="http://ck.kolivas.org/patches/muqss/4.0"
 
-  cp wastedcores/patches/*.patch ./
-  rm -R wastedcores
-fi
+VERSIONS_WASTEDCORES="daily 4.9 4.8 4.7 4.6 4.5 4.4 4.1"
+VERSIONS_MUQSS=`get_http_apache_listing "$URL_MUQSS" | tr '\n' ' '`
+
+VERSIONS_SCHEDULERS="none "
+VERSIONS_SCHEDULERS="$VERSIONS_SCHEDULERS "`match_str "$VERSIONS_WASTEDCORES" "$KERNEL_VERSION" "wastedcores"`
+VERSIONS_SCHEDULERS="$VERSIONS_SCHEDULERS "`match_str "$VERSIONS_MUQSS" "$KERNEL_VERSION" "muqss"`
+
+#Scheduler Prompt
+versions=$VERSIONS_SCHEDULERS
+versions_max=$(sa_get_count "$versions")
+
+#List kernel version choices
+printf "\nSchedulers Available - $KERNEL_VERSION\n"
+
+print_choices "$versions"
+
+#Prompt
+printf "Please enter your choice: "
+while read i
+do
+  #Check if valid input, is a number, is within choice boundaries
+  if [[ -z "$i" || "$i" -ne "$i" || "$i" > "$versions_max" ]]
+  then
+    printf "Try again: "
+  else
+    break
+  fi
+done
+
+version=$(sa_get_value "$versions" $((i-1)))
+
+case $version in
+  "wastedcores")
+    git clone --depth=1 --branch="$WASTEDCORES_BRANCH" "$WASTEDCORES_GIT"
+
+    cp wastedcores/patches/*.patch ./
+    rm -R wastedcores
+  ;;
+
+  "muqss")
+    url="$URL_MUQSS/$KERNEL_VERSION/"`get_http_apache_listing "$URL_MUQSS/$KERNEL_VERSION" "${KERNEL_VERSION}-sched-MuQSS" 1`
+    wget "$url"
+  ;;
+esac
 
 #Download additional CPU optimizations patch
 wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v3.15%2B.patch
@@ -147,11 +187,6 @@ for f in ../patch/*
 do
   patch -p1 -i "$f"
 done
-
-#Fixed in the 4.1 branch and in Freeaqingme's branches - Dirty compilation error fix
-#if [[ $version == "4.1" ]]; then
-#  sed -i '80iextern int sched_max_numa_distance;' arch/x86/kernel/smpboot.c
-#fi
 
 #Generate config prompt
 read -p "Generate a localmodconfig (y/n): " -n 1
