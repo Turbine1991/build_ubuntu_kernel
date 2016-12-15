@@ -123,7 +123,7 @@ done < "../SOURCES"
 #Prompt for scheduler
 URL_MUQSS="http://ck.kolivas.org/patches/muqss/4.0"
 
-VERSIONS_WASTEDCORES="daily 4.9 4.8 4.7 4.6 4.5 4.4 4.1"
+VERSIONS_WASTEDCORES="4.6 4.5 4.4 4.1"
 VERSIONS_MUQSS=`get_http_apache_listing "$URL_MUQSS" | tr '\n' ' '`
 
 VERSIONS_SCHEDULERS="cfs "
