@@ -156,6 +156,7 @@ do
 done
 
 version=$(sa_get_value "$versions" $((i-1)))
+echo $version > ../.scheduler #Record scheduler
 
 case $version in
   "wastedcores")
