@@ -13,7 +13,7 @@ echo "$BUILD_COUNT" > .build_count
 #
 
 ##Declare
-DEB_FILE="$BUILD_PREFIX$BUILD_COUNT"
+DEB_FILE=$BUILD_PREFIX$BUILD_COUNT-`cat kernel/.scheduler`
 
 cd "kernel"
 
