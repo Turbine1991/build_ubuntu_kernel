@@ -20,7 +20,7 @@
 * sudo bash menu.sh
 * sudo bash build.sh
 
-## Disable HT cores for potentially better scheduling performance
+## Disable HT cores for more consistent scheduling performance (Wasted Cores)
 * sudo chmod +x setht.sh
 * **Run after every boot:**
 * sudo bash setht.sh
