@@ -197,6 +197,9 @@ do
   patch -p1 -i "$f"
 done
 
+#Create the "REPORTING-BUGS" file if missing. Workaround for bug #11
+touch "REPORTING-BUGS"
+
 #Generate config prompt
 read -p "Generate a localmodconfig (y/n): " -n 1
 if [[ $REPLY =~ ^[Yy]$ ]]; then
