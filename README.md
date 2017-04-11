@@ -1,4 +1,4 @@
-# Compile your own Ubuntu kernel!
+# Compile your own Ubuntu kernel without any prior experience!
 
 ## What this does:
 * Provides optional patches for compatible kernel versions, such as bfs, WastedCores.
@@ -9,7 +9,7 @@
 * Lets you build the kernel into a .deb package.
 
 ## Requirements:
-* Ubuntu Linux. Wily or Xenial recommended.
+* Ubuntu Linux. Xenial and newer have been tested.
 * Use a stock kernel when using these scripts, for dependency resolution.
 * No real kernel experience or in-depth knowledge of Linux.
 
@@ -21,7 +21,7 @@
 * sudo bash menu.sh
 * sudo bash build.sh
 
-## Disable HT cores for more consistent scheduling performance (Wasted Cores)
+## Disable HT cores to test scheduling performance (Wasted Cores patch only)
 * sudo chmod +x setht.sh
 * **Run after every boot:**
 * sudo bash setht.sh
