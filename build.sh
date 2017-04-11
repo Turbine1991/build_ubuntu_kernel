@@ -3,8 +3,11 @@
 #GitHub This: https://github.com/Turbine1991/build_ubuntu_kernel_wastedcores
 #GitHub WastedCores: https://github.com/jplozi/wastedcores
 
+##Includes
+. functions.sh
+
 ##Setup
-BUILD_PREFIX="custom"
+BUILD_PREFIX=$(cat_contents "BUILD_PREFIX")
 
 ##Retrieve/increment build value
 BUILD_COUNT=$(cat ".build_count")
