@@ -84,6 +84,7 @@ function get_http_apache_listing {
   echo "$http_items"
 }
 
+#Returns a boolean 1 or 0, on the condition of a matching string value
 function match_str {
   local result=`echo $1 | grep $2`
 
@@ -92,4 +93,12 @@ function match_str {
   else
     [[ $result ]] && echo $3
   fi
+}
+
+#Outputs a files contents omitting commented lines
+function cat_contents {
+  local filename=$1
+
+  #cat "$filename" | egrep -v "^\s*(#|$)"
+  awk '!/^ *#/ && NF' "$filename"
 }
