@@ -1,4 +1,4 @@
-# Compile your own Ubuntu kernel without any prior experience!
+# Compile your own Ubuntu kernel easily!
 
 ## What this does:
 * Provides optional patches for compatible kernel versions, such as bfs, WastedCores.
