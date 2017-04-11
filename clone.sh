@@ -91,8 +91,7 @@ printf "Please enter your choice: "
 while read i
 do
   #Check if valid input, is a number, is within choice boundaries
-  if [[ -z "$i" || "$i" -ne "$i" || "$i" > "$versions_max" ]]
-  then
+  if [[ -z "$i" || "$i" -ne "$i" || "$i" > "$versions_max" ]]; then
     printf "Try again: "
   else
     break
@@ -201,7 +200,7 @@ case $version in
     url="$URL_MUQSS/$KERNEL_VERSION/"`get_http_apache_listing "$URL_MUQSS/$KERNEL_VERSION" "${KERNEL_VERSION}-sched-MuQSS" 1`
     wget "$url"
   ;;
-  
+
   "bfs")
     url="$URL_MUQSS/$KERNEL_VERSION/"`get_http_apache_listing "$URL_MUQSS/$KERNEL_VERSION" "${KERNEL_VERSION}-sched-bfs" 1`
     wget "$url"
@@ -216,9 +215,19 @@ cd ..
 
 #Download kernel source
 KERNEL_LINE=$(head -1 SOURCES)
+
 KERNEL_BRANCH=$(echo "$KERNEL_LINE" | awk '{ print $2 }')
-STR_GIT_LINUX=$(echo "$KERNEL_LINE" | awk '{ printf "git clone --depth=1 --branch=%s %s", $2, $1 }')
+STR_GIT_LINUX=$(echo "$KERNEL_LINE" | awk '{ printf "git clone --depth=1 %s %s", $1, $2 }')
+#STR_GIT_LINUX=$(echo "$KERNEL_LINE" | awk '{ printf "git clone --depth=1 --branch=%s %s", $2, $1 }')
+
+echo " [Obtaining kernel sources with line: '$STR_GIT_LINUX']"
+
 $STR_GIT_LINUX
+
+#Move kernel directory to always me called mainline-crack (instead of branch directory structure)
+OLD_KERNEL_DIR=$(dirname $(find $(pwd) -name "Documentation" -type d -print -quit))
+mv "$OLD_KERNEL_DIR" "mainline-crack"
+#mv "$KERNEL_BRANCH" "mainline-crack"
 
 #Patch source
 cd "mainline-crack"
