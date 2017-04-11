@@ -1,6 +1,7 @@
-# Compile your own Ubuntu WastedCores kernel!
+# Compile your own Ubuntu kernel!
 
 ## What this does:
+* Provides optional patches for compatible kernel versions, such as bfs, WastedCores.
 * Downloads all the dependencies necessary to build a kernel.
 * Lets you choose a Linux kernel version.
 * Applies WastedCores patches compatible with the kernel version.
