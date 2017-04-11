@@ -6,20 +6,51 @@
 ##Includes
 . functions.sh
 
+#Detect and enable source repository when required
+##Detect and add missing sources
+CONTENT_APT_SOURCES=$(cat_contents "/etc/apt/sources.list")
+CONTENT_APT_SOURCES_DEB=$(echo "$CONTENT_APT_SOURCES" | grep "^deb " | grep "main")
+CONTENT_APT_SOURCES_SRC=$(echo "$CONTENT_APT_SOURCES" | grep "^deb-src " | grep "main")
+
+CONTENT_APT_LINE=$(echo "$CONTENT_APT_SOURCES_DEB" | head -n 1)
+CONTENT_APT_URL=$(echo "$CONTENT_APT_LINE" | awk '{ print $2 }')
+CONTENT_APT_RELEASE=$(echo "$CONTENT_APT_LINE" | awk '{ print $3 }')
+
+CONTENT_APT_SOURCES_TAGS=$(echo "$CONTENT_APT_LINE" | awk '{print substr($0, index($0,$4))}')
+
+###Filter relevant release entries
+echo "  [Your system release is '$CONTENT_APT_RELEASE' using packages from '$CONTENT_APT_URL']"
+
+CONTENT_APT_SOURCES_DEB=$(echo "$CONTENT_APT_SOURCES_DEB" | grep "$CONTENT_APT_RELEASE" | grep "$CONTENT_APT_URL")
+CONTENT_APT_SOURCES_SRC=$(echo "$CONTENT_APT_SOURCES_SRC" | grep "$CONTENT_APT_RELEASE" | grep "$CONTENT_APT_URL")
+
+###Check for missing entries
+echo "  [Detecting whether sources are enabled in '/etc/apt/sources.list']"
+
+CONTENT_APT_BRANCHES="$CONTENT_APT_RELEASE ${CONTENT_APT_RELEASE}-updates ${CONTENT_APT_RELEASE}-backports ${CONTENT_APT_RELEASE}-security"
+
+for branch in $CONTENT_APT_BRANCHES
+do
+  #Check if branch missing from deb-src which exist in deb (some people may not have other branches available)
+  if [[ -z $(echo $CONTENT_APT_SOURCES_SRC | grep "$branch ") && ! -z $(echo $CONTENT_APT_SOURCES_DEB | grep "$branch ") ]]; then
+    line="deb-src $CONTENT_APT_URL $branch $CONTENT_APT_SOURCES_TAGS"
+    echo "  [Appending to '/etc/apt.sources.list' '$line']"
+    echo "$line" >> "/etc/apt/sources.list"
+  fi
+done
+
 ##Download Dependencies
 apt-get update
+apt-get install software-properties-common
 
-#Detect and enable source repository when required
-apt-get build-dep linux-image-`uname -r`
-#STR_APT_DEP="apt-get build-dep linux-image-`uname -r`"
-#if [[ -z $($STR_APT_DEP 2>&1 | awk '{print $4}' | grep "source") ]]; then
-#  apt-get install software-properties-common
-#  cat /etc/apt/sources.list | grep -e "^deb http://" | head -1 | awk '{ printf "deb-src %s %s main", $2, $3 }' >> /etc/apt/sources.list
-#  apt-get update
-#  $STR_APT_DEP
-#fi
-#
+###Find latest official kernel installed, ignore custom kernels
+BUILD_PREFIX=$(cat_contents "BUILD_PREFIX")
+KERNEL_INSTALLED_LATEST=$(dpkg -l linux-image* | grep "^ii" | awk '{ print $2 }' | grep -v "$BUILD_PREFIX\|+" | awk 'END { print }')
 
+###Install dependencies for existing kernel installation, ignoring any custom kernels
+echo "  [Obtaining dependencies for existing kernel: '$KERNEL_INSTALLED_LATEST']"
+
+apt-get build-dep "$KERNEL_INSTALLED_LATEST"
 apt-get install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git
 #
 
