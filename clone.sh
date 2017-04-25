@@ -74,8 +74,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   KERNEL_TARGET="sp4"
   KERNEL_GIT_URL="https://github.com/axelrtgs/linux-kernel-ipts-4.10.git"
   KERNEL_GIT_BRANCH="master"
-
-  GOTO clone
 else
 ##Manage kernel version
 #Declare
@@ -260,11 +258,6 @@ mv "$OLD_KERNEL_DIR" "mainline-crack"
 cd "mainline-crack"
 
 for f in ../patch/*.patch;
-do
-  patch -p1 -i "$f"
-done
-
-for f in *.patch;
 do
   patch -p1 -i "$f"
 done
