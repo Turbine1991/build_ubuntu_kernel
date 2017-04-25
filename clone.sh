@@ -40,7 +40,7 @@ do
 done
 
 ##Download Dependencies
-#apt-get update
+apt-get update
 apt-get install software-properties-common
 
 ###Find latest official kernel installed, ignore custom kernels
@@ -50,8 +50,8 @@ KERNEL_INSTALLED_LATEST=$(dpkg -l linux-image* | grep "^ii" | awk '{ print $2 }'
 ###Install dependencies for existing kernel installation, ignoring any custom kernels
 echo "  [Obtaining dependencies for existing kernel: '$KERNEL_INSTALLED_LATEST']"
 
-#apt-get build-dep "$KERNEL_INSTALLED_LATEST"
-#apt-get install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git
+apt-get build-dep "$KERNEL_INSTALLED_LATEST"
+apt-get install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git
 #
 
 {
@@ -226,11 +226,18 @@ KERNEL_GIT_BRANCH=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $2 }')
 
 #Skip additional details for specialised builds
 fi
-
-#Download additional CPU optimizations patch
-wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v3.15%2B.patch
 #
 
+cd ..
+#
+
+cd kernel
+
+#Download other patches
+mkdir patch
+cd patch
+##Download additional CPU optimizations patch
+wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v3.15%2B.patch
 cd ..
 
 #Download kernel source
@@ -243,19 +250,21 @@ echo " [Obtaining kernel sources with line: '$STR_GIT_LINUX']"
 $STR_GIT_LINUX
 
 #Move kernel directory to always me called mainline-crack (instead of branch directory structure)
-OLD_KERNEL_DIR=$(dirname $(find $(pwd) -name "Documentation" -type d -print -quit))
+OLD_KERNEL_DIR=$(dirname $(find $(pwd) -name "debian" -type d -print -quit))
+
+#echo "mv $OLD_KERNEL_DIR kernel/mainline-crack"
 mv "$OLD_KERNEL_DIR" "mainline-crack"
 #mv "$KERNEL_BRANCH" "mainline-crack"
 
 #Patch source
 cd "mainline-crack"
 
-for f in ../patch/*.patch
+for f in ../patch/*.patch;
 do
   patch -p1 -i "$f"
 done
 
-for f in *.patch
+for f in *.patch;
 do
   patch -p1 -i "$f"
 done
