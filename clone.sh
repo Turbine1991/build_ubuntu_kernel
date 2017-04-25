@@ -40,7 +40,7 @@ do
 done
 
 ##Download Dependencies
-apt-get update
+#apt-get update
 apt-get install software-properties-common
 
 ###Find latest official kernel installed, ignore custom kernels
@@ -50,8 +50,8 @@ KERNEL_INSTALLED_LATEST=$(dpkg -l linux-image* | grep "^ii" | awk '{ print $2 }'
 ###Install dependencies for existing kernel installation, ignoring any custom kernels
 echo "  [Obtaining dependencies for existing kernel: '$KERNEL_INSTALLED_LATEST']"
 
-apt-get build-dep "$KERNEL_INSTALLED_LATEST"
-apt-get install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git
+#apt-get build-dep "$KERNEL_INSTALLED_LATEST"
+#apt-get install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git
 #
 
 {
@@ -66,6 +66,17 @@ cd kernel
 ##Setup
 KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
 
+##Check if building for Surface 4 (uses different sources)
+KERNEL_TARGET="all"
+read -p "Build for Surface Pro 4 'ONLY' (y/N): " -n 1
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  KERNEL_TARGET="sp4"
+  KERNEL_GIT_URL="https://github.com/axelrtgs/linux-kernel-ipts-4.10.git"
+  KERNEL_GIT_BRANCH="master"
+
+  GOTO clone
+else
 ##Manage kernel version
 #Declare
 versions="daily 4.10 4.9 4.8 4.7 4.6 4.1 "
@@ -207,6 +218,15 @@ case $version in
   ;;
 esac
 
+#Get kernel sorces file
+#Ref: http://kernel.ubuntu.com/~kernel-ppa/mainline/daily/current/SOURCES
+KERNEL_LINE=$(head -1 SOURCES)
+KERNEL_GIT_URL=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $1 }')
+KERNEL_GIT_BRANCH=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $2 }')
+
+#Skip additional details for specialised builds
+fi
+
 #Download additional CPU optimizations patch
 wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v3.15%2B.patch
 #
@@ -214,11 +234,9 @@ wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_a
 cd ..
 
 #Download kernel source
-KERNEL_LINE=$(head -1 SOURCES)
-
-KERNEL_BRANCH=$(echo "$KERNEL_LINE" | awk '{ print $2 }')
-STR_GIT_LINUX=$(echo "$KERNEL_LINE" | awk '{ printf "git clone --depth=1 %s %s", $1, $2 }')
-#STR_GIT_LINUX=$(echo "$KERNEL_LINE" | awk '{ printf "git clone --depth=1 --branch=%s %s", $2, $1 }')
+#KERNEL_BRANCH=$(echo "$KERNEL_LINE" | awk '{ print $2 }')
+#STR_GIT_LINUX=$(echo "$KERNEL_LINE" | awk '{ printf "git clone --depth=1 %s %s", $1, $2 }')
+STR_GIT_LINUX=$(echo "$KERNEL_GIT_URL $KERNEL_GIT_BRANCH" | awk '{ printf "git clone --depth=1 %s %s", $1, $2 }')
 
 echo " [Obtaining kernel sources with line: '$STR_GIT_LINUX']"
 
@@ -232,7 +250,12 @@ mv "$OLD_KERNEL_DIR" "mainline-crack"
 #Patch source
 cd "mainline-crack"
 
-for f in ../patch/*
+for f in ../patch/*.patch
+do
+  patch -p1 -i "$f"
+done
+
+for f in *.patch
 do
   patch -p1 -i "$f"
 done
