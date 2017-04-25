@@ -74,6 +74,8 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   KERNEL_TARGET="sp4"
   KERNEL_GIT_URL="https://github.com/axelrtgs/linux-kernel-ipts-4.10.git"
   KERNEL_GIT_BRANCH="master"
+
+  GOTO clone
 else
 ##Manage kernel version
 #Declare
@@ -273,3 +275,7 @@ else
   make oldconfig
 fi
 }
+
+if [[ $KERNEL_TARGET = "sp4" ]]; then
+  sed -i '/CONFIG_INTEL_IPTS/c\CONFIG_INTEL_IPTS=m' .config
+fi
