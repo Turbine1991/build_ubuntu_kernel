@@ -218,6 +218,8 @@ case $version in
   ;;
 esac
 
+cd ..
+
 #Get kernel sorces file
 #Ref: http://kernel.ubuntu.com/~kernel-ppa/mainline/daily/current/SOURCES
 KERNEL_LINE=$(head -1 SOURCES)
@@ -227,11 +229,6 @@ KERNEL_GIT_BRANCH=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $2 }')
 #Skip additional details for specialised builds
 fi
 #
-
-cd ..
-#
-
-cd kernel
 
 #Download other patches
 mkdir patch
