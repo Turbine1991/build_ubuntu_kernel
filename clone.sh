@@ -247,7 +247,7 @@ echo " [Obtaining kernel sources with line: '$STR_GIT_LINUX']"
 $STR_GIT_LINUX
 
 #Move kernel directory to always me called mainline-crack (instead of branch directory structure)
-OLD_KERNEL_DIR=$(dirname $(find $(pwd) -maxdepth 2 -name "Makefile" -type f -print -quit))
+OLD_KERNEL_DIR=$(dirname $(find $(pwd) -name "Makefile" -type f -print | awk ' NR==1 || length<len {len=length; line=$0} END {print line} '))
 
 #echo "mv $OLD_KERNEL_DIR kernel/mainline-crack"
 mv "$OLD_KERNEL_DIR" "mainline-crack"
