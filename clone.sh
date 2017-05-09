@@ -79,7 +79,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 else
 ##Manage kernel version
 #Declare
-versions="daily 4.10 4.9 4.8 4.7 4.6 4.1 "
+versions="daily 4.11 4.10 4.9 4.8 4.7 4.6 "
 
 #Retrieve patch branches from git
 branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
@@ -89,8 +89,8 @@ versions="$versions$branches"
 versions_max=$(sa_get_count "$versions")
 
 #Order
-versions=$(sa_sort "$versions")
-versions=$(sa_reverse "$versions")
+versions=$(echo "$versions" | sort -V)
+#versions=$(sa_reverse "$versions")
 
 #List kernel version choices
 printf "\nKernel Versions\n"
