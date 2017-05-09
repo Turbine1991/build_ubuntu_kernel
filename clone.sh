@@ -233,6 +233,9 @@ fi
 #Download other patches
 mkdir patch
 cd patch
+
+PATH_PATCH=$(pwd)
+
 ##Download additional CPU optimizations patch
 wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v3.15%2B.patch
 cd ..
@@ -255,7 +258,7 @@ mv "$OLD_KERNEL_DIR" "mainline-crack"
 #Patch source
 cd "mainline-crack"
 
-for f in ../patch/*.patch;
+for f in $PATH_PATCH/*.patch;
 do
   patch -p1 -i "$f"
 done
