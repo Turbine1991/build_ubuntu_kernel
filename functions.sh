@@ -12,12 +12,6 @@ function sa_get_value() {
   echo ${str_arr[$index]}
 }
 
-function sa_sort() {
-  arr=($1)
-  IFS=$'\n' sorted=($(sort <<<"${arr[*]}"))
-  printf "%s\n" "${sorted[@]}"
-}
-
 function sa_reverse() {
   local str="$1"
   local output=""
