@@ -243,7 +243,7 @@ cd ..
 #Download kernel source
 #KERNEL_BRANCH=$(echo "$KERNEL_LINE" | awk '{ print $2 }')
 #STR_GIT_LINUX=$(echo "$KERNEL_LINE" | awk '{ printf "git clone --depth=1 %s %s", $1, $2 }')
-STR_GIT_LINUX=$(echo "$KERNEL_GIT_URL $KERNEL_GIT_BRANCH" | awk '{ printf "git clone --depth=1 %s %s", $1, $2 }')
+STR_GIT_LINUX=$(echo "$KERNEL_GIT_URL $KERNEL_GIT_BRANCH" | awk '{ printf "git clone --depth 1 --branch %s %s", $2, $1 }')
 
 echo " [Obtaining kernel sources with line: '$STR_GIT_LINUX']"
 
