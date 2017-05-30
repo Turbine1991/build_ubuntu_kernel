@@ -40,8 +40,8 @@ do
 done
 
 ##Download Dependencies
-apt-get update
-apt-get install software-properties-common
+apt update
+apt install software-properties-common
 
 ###Find latest official kernel installed, ignore custom kernels
 BUILD_PREFIX=$(cat_contents "BUILD_PREFIX")
@@ -50,8 +50,8 @@ KERNEL_INSTALLED_LATEST=$(dpkg -l linux-image* | grep "^ii" | awk '{ print $2 }'
 ###Install dependencies for existing kernel installation, ignoring any custom kernels
 echo "  [Obtaining dependencies for existing kernel: '$KERNEL_INSTALLED_LATEST']"
 
-apt-get build-dep "$KERNEL_INSTALLED_LATEST"
-apt-get install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git
+apt build-dep "$KERNEL_INSTALLED_LATEST"
+apt install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git
 #
 
 {
