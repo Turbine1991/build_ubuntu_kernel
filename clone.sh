@@ -263,6 +263,10 @@ do
   patch -p1 -i "$f"
 done
 
+#Patch Makefile
+sed -i '/HOSTCFLAGS   =/c\HOSTCFLAGS   = -march=native -mtune=native -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-tree-vectorize -std=gnu89' Makefile
+sed -i '/HOSTCXXFLAGS =/c\HOSTCXXFLAGS = -march=native -mtune=native -Ofast' Makefile
+
 #Create the "REPORTING-BUGS" file if missing. Workaround for bug #11
 touch "REPORTING-BUGS"
 
