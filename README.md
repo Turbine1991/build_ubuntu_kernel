@@ -16,9 +16,9 @@
 ## How to use, simply run:
 * sudo apt-get update && sudo apt-get install git
 * git clone https://github.com/Turbine1991/build_ubuntu_kernel_wastedcores.git && cd build_ubuntu_kernel_wastedcores
-* sudo bash clone.sh
-* sudo bash menu.sh
-* sudo bash build.sh
+* sudo ./clone.sh
+* sudo ./menu.sh
+* sudo ./build.sh
 
 ## Disable HT cores to test scheduling performance (Wasted Cores patch only)
 * sudo chmod +x setht.sh
