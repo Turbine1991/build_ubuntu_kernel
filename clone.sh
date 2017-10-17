@@ -70,8 +70,8 @@ KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
 versions="daily 4.14 4.13 "
 
 #Retrieve patch branches from git
-branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
-versions="$versions$branches"
+#branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
+versions="$versions"
 
 #Initialise
 versions_max=$(sa_get_count "$versions")
