@@ -67,7 +67,7 @@ KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
 
 ##Manage kernel version
 #Declare
-versions="daily 4.13 "
+versions="daily 4.14 4.13 "
 
 #Retrieve patch branches from git
 branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
@@ -118,8 +118,8 @@ fi
 wget "$PATCH_URL/SOURCES"
 
 ##Retrieve patches
-mkdir patch
-cd patch
+mkdir patch && cd patch
+PATH_PATCH=$(pwd)
 
 #Download kernel patches
 while read f; do
@@ -128,22 +128,17 @@ while read f; do
   fi
 done < "../SOURCES"
 
+#Download CPU optimizations patch
+wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
+
+cd ..
+
 #Get kernel sorces file
 #Ref: http://kernel.ubuntu.com/~kernel-ppa/mainline/daily/current/SOURCES
 KERNEL_LINE=$(head -1 SOURCES)
 KERNEL_GIT_URL=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $1 }')
 KERNEL_GIT_BRANCH=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $2 }')
 #
-
-#Download other patches
-mkdir patch
-cd patch
-
-PATH_PATCH=$(pwd)
-
-##Download additional CPU optimizations patch
-wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
-cd ..
 
 #Download kernel source
 STR_GIT_LINUX=$(echo "$KERNEL_GIT_URL $KERNEL_GIT_BRANCH" | awk '{ printf "git clone --depth 1 --branch %s %s", $2, $1 }')
