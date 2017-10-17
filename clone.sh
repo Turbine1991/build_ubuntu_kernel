@@ -178,7 +178,7 @@ read -p "Generate a localmodconfig (y/n): " -n 1
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   make localmodconfig
 else
-  make oldconfig
+  make olddefconfig
 fi
 
 #Disable debuging & enable expert mode
