@@ -1,7 +1,6 @@
 #!/bin/bash
 
 #GitHub This: https://github.com/Turbine1991/build_ubuntu_kernel_wastedcores
-#GitHub WastedCores: https://github.com/jplozi/wastedcores
 
 ##Includes
 . functions.sh
@@ -66,20 +65,9 @@ cd kernel
 ##Setup
 KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
 
-##Check if building for Surface 4 (uses different sources)
-KERNEL_TARGET="all"
-read -p "Build for Surface Pro 4 'ONLY' (y/N): " -n 1
-
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  KERNEL_TARGET="sp4"
-  KERNEL_GIT_URL="https://github.com/axelrtgs/linux-kernel-ipts-4.10.git"
-  KERNEL_GIT_BRANCH="master"
-
-  GOTO clone
-else
 ##Manage kernel version
 #Declare
-versions="daily 4.11 4.10 4.9 4.8 4.7 4.6 "
+versions="daily 4.13 "
 
 #Retrieve patch branches from git
 branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
@@ -112,27 +100,6 @@ done
 version=$(sa_get_value "$versions" $((i-1)))
 
 #Process selected kernel version
-WASTEDCORES_GIT="https://github.com/Freeaqingme/wastedcores.git"
-
-case $version in
-  "4.5")
-    WASTEDCORES_BRANCH="linux-4.5"
-  ;;
-
-  "4.4")
-    WASTEDCORES_BRANCH="linux-4.4"
-  ;;
-
-  "4.1")
-    WASTEDCORES_GIT="https://github.com/jplozi/wastedcores.git"
-    WASTEDCORES_BRANCH="master"
-  ;;
-
-  *)
-    WASTEDCORES_BRANCH="master"
-  ;;
-esac
-
 if [[ $version == "daily" ]]; then
   KERNEL_VERSION="$version"
 
@@ -161,73 +128,11 @@ while read f; do
   fi
 done < "../SOURCES"
 
-#Prompt for scheduler
-URL_MUQSS="http://ck.kolivas.org/patches/muqss/4.0"
-URL_BFS="http://ck.kolivas.org/patches/bfs/4.0"
-
-VERSIONS_WASTEDCORES="4.6 4.5 4.4 4.1"
-VERSIONS_MUQSS=`get_http_apache_listing "$URL_MUQSS" | tr '\n' ' '`
-VERSIONS_BFS=`get_http_apache_listing "$URL_BFS" | tr '\n' ' '`
-
-VERSIONS_SCHEDULERS="cfs "
-VERSIONS_SCHEDULERS="$VERSIONS_SCHEDULERS "`match_str "$VERSIONS_WASTEDCORES" "$KERNEL_VERSION" "wastedcores"`
-VERSIONS_SCHEDULERS="$VERSIONS_SCHEDULERS "`match_str "$VERSIONS_MUQSS" "$KERNEL_VERSION" "muqss"`
-VERSIONS_SCHEDULERS="$VERSIONS_SCHEDULERS "`match_str "$VERSIONS_BFS" "$KERNEL_VERSION" "bfs"`
-
-#Scheduler Prompt
-versions=$VERSIONS_SCHEDULERS
-versions_max=$(sa_get_count "$versions")
-
-#List kernel version choices
-printf "\nSchedulers Available - $KERNEL_VERSION\n"
-
-print_choices "$versions"
-
-#Prompt
-printf "Please enter your choice: "
-while read i
-do
-  #Check if valid input, is a number, is within choice boundaries
-  if [[ -z "$i" || "$i" -ne "$i" || "$i" > "$versions_max" ]]
-  then
-    printf "Try again: "
-  else
-    break
-  fi
-done
-
-version=$(sa_get_value "$versions" $((i-1)))
-echo $version > ../.scheduler #Record scheduler
-
-case $version in
-  "wastedcores")
-    git clone --depth=1 --branch="$WASTEDCORES_BRANCH" "$WASTEDCORES_GIT"
-
-    cp wastedcores/patches/*.patch ./
-    rm -R wastedcores
-  ;;
-
-  "muqss")
-    url="$URL_MUQSS/$KERNEL_VERSION/"`get_http_apache_listing "$URL_MUQSS/$KERNEL_VERSION" "${KERNEL_VERSION}-sched-MuQSS" 1`
-    wget "$url"
-  ;;
-
-  "bfs")
-    url="$URL_MUQSS/$KERNEL_VERSION/"`get_http_apache_listing "$URL_MUQSS/$KERNEL_VERSION" "${KERNEL_VERSION}-sched-bfs" 1`
-    wget "$url"
-  ;;
-esac
-
-cd ..
-
 #Get kernel sorces file
 #Ref: http://kernel.ubuntu.com/~kernel-ppa/mainline/daily/current/SOURCES
 KERNEL_LINE=$(head -1 SOURCES)
 KERNEL_GIT_URL=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $1 }')
 KERNEL_GIT_BRANCH=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $2 }')
-
-#Skip additional details for specialised builds
-fi
 #
 
 #Download other patches
@@ -237,12 +142,10 @@ cd patch
 PATH_PATCH=$(pwd)
 
 ##Download additional CPU optimizations patch
-wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v3.15%2B.patch
+wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
 cd ..
 
 #Download kernel source
-#KERNEL_BRANCH=$(echo "$KERNEL_LINE" | awk '{ print $2 }')
-#STR_GIT_LINUX=$(echo "$KERNEL_LINE" | awk '{ printf "git clone --depth=1 %s %s", $1, $2 }')
 STR_GIT_LINUX=$(echo "$KERNEL_GIT_URL $KERNEL_GIT_BRANCH" | awk '{ printf "git clone --depth 1 --branch %s %s", $2, $1 }')
 
 echo " [Obtaining kernel sources with line: '$STR_GIT_LINUX']"
