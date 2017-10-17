@@ -189,7 +189,3 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   sed -i 's/CONFIG_DEBUG_KERNEL=y/# CONFIG_DEBUG_KERNEL is not set/g' .config
 fi
 }
-
-if [[ $KERNEL_TARGET = "sp4" ]]; then
-  sed -i '/CONFIG_INTEL_IPTS/c\CONFIG_INTEL_IPTS=m' .config
-fi
