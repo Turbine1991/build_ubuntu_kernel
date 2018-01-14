@@ -17,3 +17,5 @@
 * sudo ./clone.sh
 * sudo ./menu.sh
 * sudo ./build.sh
+
+![Screenshot](screen1.png)
