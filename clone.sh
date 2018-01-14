@@ -179,7 +179,7 @@ fi
 #Disable debuging & enable expert mode
 read -p "Disable kernel debugging (y/n): " -n 1
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-  sed -i 's/# CONFIG_KALLSYMS is not set/CONFIG_EXPERT=y/g' .config
+  sed -i 's/# CONFIG_EXPERT is not set/CONFIG_EXPERT=y/g' .config
   sed -i 's/CONFIG_KALLSYMS=y/# CONFIG_KALLSYMS is not set/g' .config
   sed -i 's/CONFIG_DEBUG_KERNEL=y/# CONFIG_DEBUG_KERNEL is not set/g' .config
 fi
