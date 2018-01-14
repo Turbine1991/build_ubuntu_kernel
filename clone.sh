@@ -184,3 +184,6 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   sed -i 's/CONFIG_DEBUG_KERNEL=y/# CONFIG_DEBUG_KERNEL is not set/g' .config
 fi
 }
+
+# Disable objtool (results in failed build at this point in time)
+sed -i 's/CONFIG_STACK_VALIDATION=y/# CONFIG_STACK_VALIDATION is not set/g' .config
