@@ -18,4 +18,6 @@
 * sudo ./menu.sh
 * sudo ./build.sh
 
+And don't forget to reboot if you install it following a successful build!
+
 ![Screenshot](screen1.png)
