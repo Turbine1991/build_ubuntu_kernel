@@ -54,135 +54,138 @@ apt install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev l
 #
 
 {
-if [[ -f "kernel/mainline-crack/.config" ]]; then
-  cp "kernel/mainline-crack/.config" ./
-fi
+    if [[ -f "kernel/mainline-crack/.config" ]]; then
+        cp "kernel/mainline-crack/.config" ./
+    fi
 
-rm -R kernel
-mkdir kernel
-cd kernel
+    rm -R kernel
+    mkdir kernel
+    cd kernel
 
-##Setup
-KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
+    ##Setup
+    KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
 
-##Manage kernel version
-#Declare
-versions="daily 4.14 4.13 "
+    ##Manage kernel version
+    #Declare
+    versions="daily 4.15 4.14 4.13 "
 
-#Retrieve patch branches from git
-#branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
-versions="$versions"
+    #Retrieve patch branches from git
+    #branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
+    versions="$versions"
 
-#Initialise
-versions_max=$(sa_get_count "$versions")
+    #Initialise
+    versions_max=$(sa_get_count "$versions")
 
-#Order
-versions=$(echo "$versions" | sort -V)
-#versions=$(sa_reverse "$versions")
+    #Order
+    versions=$(echo "$versions" | sort -V)
+    #versions=$(sa_reverse "$versions")
 
-#List kernel version choices
-printf "\nKernel Versions\n"
+    #List kernel version choices
+    printf "\nKernel Versions\n"
 
-print_choices "$versions"
+    print_choices "$versions"
 
-#Prompt
-printf "Please enter your choice: "
-while read i
-do
-  #Check if valid input, is a number, is within choice boundaries
-  if [[ -z "$i" || "$i" -ne "$i" || "$i" > "$versions_max" ]]; then
-    printf "Try again: "
-  else
-    break
-  fi
-done
+    #Prompt
+    printf "Please enter your choice (daily is often broken): "
+    while read i
+    do
+    #Check if valid input, is a number, is within choice boundaries
+    if [[ -z "$i" || "$i" -ne "$i" || "$i" > "$versions_max" ]]; then
+        printf "Try again: "
+    else
+        break
+    fi
+    done
 
-version=$(sa_get_value "$versions" $((i-1)))
+    version=$(sa_get_value "$versions" $((i-1)))
 
-#Process selected kernel version
-if [[ $version == "daily" ]]; then
-  KERNEL_VERSION="$version"
+    #Process selected kernel version
+    if [[ $version == "daily" ]]; then
+        KERNEL_VERSION="$version"
 
-  KERNEL_SOURCE_URL="$KERNEL_SOURCE_URL/daily/current"
+        KERNEL_SOURCE_URL="$KERNEL_SOURCE_URL/daily/current"
 
-  PATCH_URL="$KERNEL_SOURCE_URL"
-else
-  KERNEL_VERSION="$version"
+        PATCH_URL="$KERNEL_SOURCE_URL"
+    else
+        KERNEL_VERSION="$version"
 
-  ##Find latest kernel version in a specific branch
-  PATCH_DIR=`get_http_apache_listing "$KERNEL_SOURCE_URL" "v$KERNEL_VERSION" 1`
-  PATCH_URL="$KERNEL_SOURCE_URL/$PATCH_DIR"
-fi
+        ##Find latest kernel version in a specific branch
+        PATCH_DIR=`get_http_apache_listing "$KERNEL_SOURCE_URL" "v$KERNEL_VERSION" 1`
+        PATCH_URL="$KERNEL_SOURCE_URL/$PATCH_DIR"
+    fi
 
-##Get kernel data
-wget "$PATCH_URL/SOURCES"
+    ##Get kernel data
+    wget "$PATCH_URL/SOURCES"
 
-##Retrieve patches
-mkdir patch && cd patch
-PATH_PATCH=$(pwd)
+    ##Retrieve patches
+    mkdir patch && cd patch
+    PATH_PATCH=$(pwd)
 
-#Download kernel patches
-while read f; do
-  if [[ $f == *".patch" ]]; then
-    wget "$PATCH_URL/$f"
-  fi
-done < "../SOURCES"
+    #Download kernel patches
+    while read f; do
+    if [[ $f == *".patch" ]]; then
+        wget "$PATCH_URL/$f"
+    fi
+    done < "../SOURCES"
 
-#Download CPU optimizations patch
-wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
+    #Download CPU optimizations patch
+    wget https://raw.githubusercontent.com/graysky2/kernel_gcc_patch/master/enable_additional_cpu_optimizations_for_gcc_v4.9%2B_kernel_v4.13%2B.patch
 
-cd ..
+    cd ..
 
-#Get kernel sorces file
-#Ref: http://kernel.ubuntu.com/~kernel-ppa/mainline/daily/current/SOURCES
-KERNEL_LINE=$(head -1 SOURCES)
-KERNEL_GIT_URL=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $1 }')
-KERNEL_GIT_BRANCH=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $2 }')
-#
+    #Get kernel sorces file
+    #Ref: http://kernel.ubuntu.com/~kernel-ppa/mainline/daily/current/SOURCES
+    KERNEL_LINE=$(head -1 SOURCES)
+    KERNEL_GIT_URL=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $1 }')
+    KERNEL_GIT_BRANCH=$(echo "$KERNEL_LINE" | awk '{ printf "%s", $2 }')
+    #
 
-#Download kernel source
-STR_GIT_LINUX=$(echo "$KERNEL_GIT_URL $KERNEL_GIT_BRANCH" | awk '{ printf "git clone --depth 1 --branch %s %s", $2, $1 }')
+    #Download kernel source
+    STR_GIT_LINUX=$(echo "$KERNEL_GIT_URL $KERNEL_GIT_BRANCH" | awk '{ printf "git clone --depth 1 --branch %s %s", $2, $1 }')
 
-echo " [Obtaining kernel sources with line: '$STR_GIT_LINUX']"
+    echo " [Obtaining kernel sources with line: '$STR_GIT_LINUX']"
 
-$STR_GIT_LINUX
+    $STR_GIT_LINUX
 
-#Move kernel directory to always me called mainline-crack (instead of branch directory structure)
-OLD_KERNEL_DIR=$(dirname $(find $(pwd) -name "Makefile" -type f -print | awk ' NR==1 || length<len {len=length; line=$0} END {print line} '))
+    #Move kernel directory to always me called mainline-crack (instead of branch directory structure)
+    OLD_KERNEL_DIR=$(dirname $(find $(pwd) -name "Makefile" -type f -print | awk ' NR==1 || length<len {len=length; line=$0} END {print line} '))
 
-#echo "mv $OLD_KERNEL_DIR kernel/mainline-crack"
-mv "$OLD_KERNEL_DIR" "mainline-crack"
+    #echo "mv $OLD_KERNEL_DIR kernel/mainline-crack"
+    mv "$OLD_KERNEL_DIR" "mainline-crack"
 
-#Patch source
-cd "mainline-crack"
+    #Patch source
+    cd "mainline-crack"
 
-for f in $PATH_PATCH/*.patch;
-do
-  patch -p1 -i "$f"
-done
+    for f in $PATH_PATCH/*.patch;
+    do
+        patch -p1 -i "$f"
+    done
 
-#Patch Makefile
-sed -i '/HOSTCFLAGS   =/c\HOSTCFLAGS   = -march=native -mtune=native -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-tree-vectorize -std=gnu89' Makefile
-sed -i '/HOSTCXXFLAGS =/c\HOSTCXXFLAGS = -march=native -mtune=native -Ofast' Makefile
+    #Patch Makefile
+    sed -i '/HOSTCFLAGS   =/c\HOSTCFLAGS   = -march=native -mtune=native -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves -fno-tree-vectorize -std=gnu89' Makefile
+    sed -i '/HOSTCXXFLAGS =/c\HOSTCXXFLAGS = -march=native -mtune=native -Ofast' Makefile
 
-#Create the "REPORTING-BUGS" file if missing. Workaround for bug #11
-touch "REPORTING-BUGS"
+    #Create the "REPORTING-BUGS" file if missing. Workaround for bug #11
+    touch "REPORTING-BUGS"
 
-#Generate config prompt
-read -p "Generate a localmodconfig (y/n): " -n 1
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  make localmodconfig
-else
-  make olddefconfig
-fi
+    #Generate config prompt
+    read -p "Generate a localmodconfig (y/n): " -n 1
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        make localmodconfig
+    else
+        make olddefconfig
+    fi
 
-#Disable debuging & enable expert mode
-read -p "Disable kernel debugging (y/n): " -n 1
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  sed -i 's/# CONFIG_EXPERT is not set/CONFIG_EXPERT=y/g' .config
-  sed -i 's/CONFIG_KALLSYMS=y/# CONFIG_KALLSYMS is not set/g' .config
-  sed -i 's/CONFIG_DEBUG_KERNEL=y/# CONFIG_DEBUG_KERNEL is not set/g' .config
-fi
+    #Disable debuging & enable expert mode
+    #read -p "Disable kernel debugging (y/n): " -n 1
+    #if [[ $REPLY =~ ^[Yy]$ ]]; then
+        sed -i 's/# CONFIG_EXPERT is not set/CONFIG_EXPERT=y/g' .config
+        sed -i 's/CONFIG_KALLSYMS=y/# CONFIG_KALLSYMS is not set/g' .config
+        sed -i 's/CONFIG_DEBUG_KERNEL=y/# CONFIG_DEBUG_KERNEL is not set/g' .config
+    #fi
+    
+    #Disable KPTI (Page table isolation aka, meltdown & spectre patches which degrade performance for security)
+    sed -i 's/CONFIG_PAGE_TABLE_ISOLATION=y/# CONFIG_PAGE_TABLE_ISOLATION is not set/g' .config
 }
 
 # Disable objtool (results in failed build at this point in time)
