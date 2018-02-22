@@ -38,6 +38,9 @@ do
   fi
 done
 
+##Setup git
+git config http.postBuffer 524288000
+
 ##Download Dependencies
 apt update
 apt install software-properties-common
@@ -186,6 +189,14 @@ apt install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev l
     
     #Disable KPTI (Page table isolation aka, meltdown & spectre patches which degrade performance for security)
     sed -i 's/CONFIG_PAGE_TABLE_ISOLATION=y/# CONFIG_PAGE_TABLE_ISOLATION is not set/g' .config
+    
+    #Disable additional application security
+    sed -i 's/CONFIG_SECURITY=y/# CONFIG_SECURITY is not set/g' .config
+    sed -i 's/CONFIG_SECURITYFS=y/# s/CONFIG_SECURITYFS is not set/g' .config
+    sed -i 's/CONFIG_SECURITY=y/# CONFIG_SECURITY is not set/g' .config
+    sed -i 's/CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR=y/# s/CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR is not set/g' .config
+    #CONFIG_DEFAULT_SECURITY_DAC
+    #CONFIG_DEFAULT_SECURITY
 }
 
 # Disable objtool (results in failed build at this point in time)
