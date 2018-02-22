@@ -192,9 +192,9 @@ apt install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev l
     
     #Disable additional application security
     sed -i 's/CONFIG_SECURITY=y/# CONFIG_SECURITY is not set/g' .config
-    sed -i 's/CONFIG_SECURITYFS=y/# s/CONFIG_SECURITYFS is not set/g' .config
+    sed -i 's/CONFIG_SECURITYFS=y/# CONFIG_SECURITYFS is not set/g' .config
     sed -i 's/CONFIG_SECURITY=y/# CONFIG_SECURITY is not set/g' .config
-    sed -i 's/CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR=y/# s/CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR is not set/g' .config
+    sed -i 's/CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR=y/# CONFIG_HAVE_HARDENED_USERCOPY_ALLOCATOR is not set/g' .config
     #CONFIG_DEFAULT_SECURITY_DAC
     #CONFIG_DEFAULT_SECURITY
 }
