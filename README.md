@@ -13,7 +13,7 @@
 
 ## How to use, simply run:
 * sudo apt-get update && sudo apt-get install git
-* git clone https://github.com/Turbine1991/build_ubuntu_kernel.git && cd build_ubuntu_kernel_wastedcores
+* git clone https://github.com/Turbine1991/build_ubuntu_kernel.git && cd build_ubuntu_kernel
 * sudo ./clone.sh
 * sudo ./menu.sh
 * sudo ./build.sh
