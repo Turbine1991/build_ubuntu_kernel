@@ -53,7 +53,7 @@ KERNEL_INSTALLED_LATEST=$(dpkg -l linux-image* | grep "^ii" | awk '{ print $2 }'
 echo "  [Obtaining dependencies for existing kernel: '$KERNEL_INSTALLED_LATEST']"
 
 apt build-dep "$KERNEL_INSTALLED_LATEST"
-apt install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git libelf-dev bison
+apt install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev liblz4-tool git libelf-dev bison flex
 #
 
 {
