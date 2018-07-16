@@ -28,6 +28,7 @@ cd "mainline-crack"
 export CFLAGS=' -march=native -mtune=native -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves ' \
 		&& export CXXFLAGS=' -march=native -mtune=native -mcpu=native -Ofast -fwhole-program' \
 		&& export LDFLAGS=' -fwhole-program '
+		
 # (broken) -fwhole-program
 
 make clean && fakeroot make-kpkg -j`nproc` --initrd --append-to-version=$DEB_FILE kernel_image kernel_headers
