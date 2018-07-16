@@ -25,7 +25,7 @@ cd "kernel"
 cd "mainline-crack"
 
 ##Experiment with some optimizations
-export CFLAGS=' -march=native -mtune=native -mcpu=native -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves ' \
+export CFLAGS=' -march=native -mtune=native -Ofast -fmodulo-sched -fmodulo-sched-allow-regmoves ' \
 		&& export CXXFLAGS=' -march=native -mtune=native -mcpu=native -Ofast -fwhole-program' \
 		&& export LDFLAGS=' -fwhole-program '
 # (broken) -fwhole-program
