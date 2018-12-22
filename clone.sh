@@ -66,7 +66,7 @@ apt install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev l
     cd kernel
 
     ##Setup
-    KERNEL_SOURCE_URL="http://kernel.ubuntu.com/~kernel-ppa/mainline"
+    KERNEL_SOURCE_URL="https://kernel.ubuntu.com/~kernel-ppa/mainline"
 
     ##Manage kernel version
     #Declare
