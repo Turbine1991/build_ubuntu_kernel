@@ -70,7 +70,7 @@ apt install curl kernel-package libncurses5-dev fakeroot wget bzip2 libssl-dev l
 
     ##Manage kernel version
     #Declare
-    versions="daily 4.19 4.18 4.17 4.16 4.15 4.14 4.13 "
+    versions="daily 4.20 4.19 4.18 4.17 4.16 4.15 4.14 4.13 "
 
     #Retrieve patch branches from git
     #branches=$(get_git_branches "https://github.com/Freeaqingme/wastedcores.git")
